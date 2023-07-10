@@ -24,12 +24,11 @@ export default class TraineeReport extends Component {
 							<th>Candidate ID</th>
 							<th>Name</th>
 							<th>Age</th>
-							<th>Product No</th>
 							<th>Joined Date</th>
 							<th>Defect Rate</th>
-							<th>Dexterity Test</th>
-							<th>Button</th>
-							{/* <th colSpan='3'></th> */}
+							
+							<th>Action</th>
+						
 						</tr>
 					</thead>
 					<tbody>
@@ -39,52 +38,14 @@ export default class TraineeReport extends Component {
 							<td>sample data</td>
 							<td>sample data</td>
 							<td>sample data</td>
-							<td>sample data</td>
-							<td>sample data</td>
+						
 							<td>
-								<button>btn1</button>
-								<button>btn2</button>
+								<button>Delete</button>
+								<button>Defect</button>
 							</td>
 						</tr>
-						<tr>
-							<td>sample</td>
-							<td>sample data</td>
-							<td>sample data</td>
-							<td>sample data</td>
-							<td>sample data</td>
-							<td>sample data</td>
-							<td>sample data</td>
-							<td>
-								<button>btn1</button>
-								<button>btn2</button>
-							</td>
-						</tr>
-						<tr>
-							<td>sample</td>
-							<td>sample data</td>
-							<td>sample data</td>
-							<td>sample data</td>
-							<td>sample data</td>
-							<td>sample data</td>
-							<td>sample data</td>
-							<td>
-								<button>btn1</button>
-								<button>btn2</button>
-							</td>
-						</tr>
-						<tr>
-							<td>sample</td>
-							<td>sample data</td>
-							<td>sample data</td>
-							<td>sample data</td>
-							<td>sample data</td>
-							<td>sample data</td>
-							<td>sample data</td>
-							<td>
-								<button>btn1</button>
-								<button>btn2</button>
-							</td>
-						</tr>
+						
+					
 					</tbody>
 				</table>
 			</div>

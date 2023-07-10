@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Body, File, UploadFile
+from fastapi import FastAPI, Body, File, UploadFile, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from database import db
 import numpy as np
@@ -28,7 +28,10 @@ def getNotes():
 @app.get("/notes/{id}")
 def getNote(id: str):
     notes = db.search_by_hash('notesapp', 'notes', [id], get_attributes=['*'])
-    return notes[0]
+    if notes:
+        return notes[0]
+    else:
+        raise HTTPException(status_code=404, detail="Note not found")
 
 @app.post("/notes")
 def addNotes(data: dict = Body(...)):
@@ -64,11 +67,14 @@ async def ping():
     return "Hello, I am alive"
 
 def read_file_as_image(data) -> np.ndarray:
-    image = Image.open(BytesIO(data))
-    # Resize image to (256, 256)
-    image = image.resize((256, 256))
-    image = np.array(image)
-    return image
+    try:
+        image = Image.open(BytesIO(data))
+        # Resize image to (256, 256)
+        image = image.resize((256, 256))
+        image = np.array(image)
+        return image
+    except Exception as e:
+        raise HTTPException(status_code=400, detail="Invalid image file")
 
 @app.post("/predict")
 async def predict(
@@ -80,8 +86,8 @@ async def predict(
     predictions = MODEL.predict(img_batch)
 
     predicted_class = CLASS_NAMES[np.argmax(predictions[0])]
-    confidence = np.max(predictions[0])
+    confidence = float(np.max(predictions[0]))
     return {
         'class': predicted_class,
-        'confidence': float(confidence)
+        'confidence': confidence
     }

@@ -1,6 +1,10 @@
-from fastapi import FastAPI, Body
+from fastapi import FastAPI, Body, File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from database import db
+import numpy as np
+from io import BytesIO
+from PIL import Image
+import tensorflow as tf
 
 app = FastAPI()
 
@@ -50,3 +54,34 @@ def deleteNote(id: str):
     db.delete('notesapp', 'notes', [id])
     notes = db.sql('SELECT * FROM notesapp.notes')
     return notes
+
+MODEL = tf.keras.models.load_model('./model/garment.h5')
+
+CLASS_NAMES = ["defect3", "non-defect", "open-defect", "wavy-seam-defect"]
+
+@app.get("/ping")
+async def ping():
+    return "Hello, I am alive"
+
+def read_file_as_image(data) -> np.ndarray:
+    image = Image.open(BytesIO(data))
+    # Resize image to (256, 256)
+    image = image.resize((256, 256))
+    image = np.array(image)
+    return image
+
+@app.post("/predict")
+async def predict(
+    file: UploadFile = File(...)
+):
+    image = read_file_as_image(await file.read())
+    img_batch = np.expand_dims(image, 0)
+    
+    predictions = MODEL.predict(img_batch)
+
+    predicted_class = CLASS_NAMES[np.argmax(predictions[0])]
+    confidence = np.max(predictions[0])
+    return {
+        'class': predicted_class,
+        'confidence': float(confidence)
+    }

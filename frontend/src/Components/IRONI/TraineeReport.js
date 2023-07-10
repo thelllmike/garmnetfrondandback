@@ -2,8 +2,45 @@ import React, { Component } from "react";
 import "../../Styles/TraineeReport.css";
 import logo from "../../images/logo.png";
 import "../../Styles/Navbar.css";
+import axios from "axios";
+import EmployeeRow from "./EmployeeRow";
 
 export default class TraineeReport extends Component {
+
+	constructor(props) {
+		super(props);
+		this.state = { employee: [], search: "" };
+		// this.state.Station = this.props.match.params.id;
+
+		this.onChangeSearch = this.onChangeSearch.bind(this);
+	}	
+
+	onChangeSearch(e) {
+		this.setState({
+			search: e.target.value,
+		});
+	}
+
+	componentDidMount() {
+		// alert('email is ' +this.props.match.params.id);
+		axios
+			.get("http://127.0.0.1:8000/notes")
+			.then((response) => {
+				// alert('Pass una')
+				// alert('Data Tika :'+response.data)
+				this.setState({ employee: response.data });
+			})
+			.catch(function (error) {
+				console.log(error);
+			});
+	}
+	tabRow() {
+		return this.state.employee.map(function (object, i) {
+			return <EmployeeRow obj={object} key={i} />;
+		});
+		
+	}
+
 	render() {
 		return (
 			<div className='traineeReport'>
@@ -32,7 +69,7 @@ export default class TraineeReport extends Component {
 						</tr>
 					</thead>
 					<tbody>
-						<tr>
+						{/* <tr>
 							<td>sample</td>
 							<td>sample data</td>
 							<td>sample data</td>
@@ -43,9 +80,8 @@ export default class TraineeReport extends Component {
 								<button>Delete</button>
 								<button>Defect</button>
 							</td>
-						</tr>
-						
-					
+						</tr> */}
+					{this.tabRow()}
 					</tbody>
 				</table>
 			</div>

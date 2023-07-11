@@ -75,19 +75,54 @@ def read_file_as_image(data) -> np.ndarray:
         return image
     except Exception as e:
         raise HTTPException(status_code=400, detail="Invalid image file")
+CLASS_NAMES = ["defect3", "non-defect", "open-defect", "wavy-seam-defect"]
+
+@app.get("/ping")
+async def ping():
+    return "Hello, I am alive"
+
+def read_file_as_image(data) -> np.ndarray:
+    image = Image.open(BytesIO(data))
+    # Resize image to (256, 256)
+    image = image.resize((256, 256))
+    image = np.array(image)
+    return image
+
+prediction_counter = 0
+defect_counter = 0
+overall_defect_percentage = 0.0
 
 @app.post("/predict")
 async def predict(
     file: UploadFile = File(...)
 ):
+    global prediction_counter, defect_counter, overall_defect_percentage
+    
     image = read_file_as_image(await file.read())
     img_batch = np.expand_dims(image, 0)
     
     predictions = MODEL.predict(img_batch)
-
     predicted_class = CLASS_NAMES[np.argmax(predictions[0])]
-    confidence = float(np.max(predictions[0]))
-    return {
+    
+    prediction_counter += 1
+    
+    if predicted_class in ["defect3", "open-defect", "wavy-seam-defect"]:
+        defect_counter += 1
+    
+    confidence = np.max(predictions[0])
+    response = {
         'class': predicted_class,
-        'confidence': confidence
+        'confidence': float(confidence)
     }
+    
+    if prediction_counter % 5 == 0:
+        overall_defect_percentage = (defect_counter / prediction_counter) * 100.0
+    
+    if prediction_counter == 5:
+        prediction_counter = 0
+        defect_counter = 0
+    
+    response['overall_defect_percentage'] = overall_defect_percentage
+    
+    return response
+    

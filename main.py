@@ -46,11 +46,29 @@ def addNotes(data: dict = Body(...)):
     notes = db.sql('SELECT * FROM notesapp.notes')
     return notes
 
+# @app.put("/note/{id}")
+# def updateNote(id: str, data: dict = Body(...)):
+#     # note = db.update('notesapp', 'notes', [{"id": id, "body": data.get("body")}])
+#     db.update('notesapp', 'notes', [{"id":id, "rate":data["rate"]}])
+#     notes = db.sql('SELECT * FROM notesapp.notes')
+#     return notes
+
 @app.put("/notes/{id}")
 def updateNote(id: str, data: dict = Body(...)):
-    note = db.update('notesapp', 'notes', [{"id": id, "body": data.get("body")}])
+    note = {
+        "id": id,
+        "candidate": data.get('candidate'),
+        "name": data.get('name'),
+        "age": data.get('age'),
+        "joinDate": data.get('joinDate'),
+        "rate": data.get('rate')
+    }
+    db.update('notesapp', 'notes', [note])
     notes = db.sql('SELECT * FROM notesapp.notes')
     return notes
+
+
+
 
 @app.delete("/notes/{id}")
 def deleteNote(id: str):

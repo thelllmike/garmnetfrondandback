@@ -64,6 +64,8 @@ const handleSubmit = (event) => {
           type="text"
           className="rate"
           placeholder="Rate"
+          readOnly
+          value={0}
           name="rate"
           onChange={handleChange}
         />

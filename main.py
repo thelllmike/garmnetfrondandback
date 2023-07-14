@@ -59,7 +59,6 @@ def deleteNote(id: str):
     return notes
 
 MODEL = tf.keras.models.load_model('./model/garment.h5')
-
 CLASS_NAMES = ["defect3", "non-defect", "open-defect", "wavy-seam-defect"]
 
 @app.get("/ping")
@@ -75,54 +74,75 @@ def read_file_as_image(data) -> np.ndarray:
         return image
     except Exception as e:
         raise HTTPException(status_code=400, detail="Invalid image file")
-CLASS_NAMES = ["defect3", "non-defect", "open-defect", "wavy-seam-defect"]
-
-@app.get("/ping")
-async def ping():
-    return "Hello, I am alive"
-
-def read_file_as_image(data) -> np.ndarray:
-    image = Image.open(BytesIO(data))
-    # Resize image to (256, 256)
-    image = image.resize((256, 256))
-    image = np.array(image)
-    return image
 
 prediction_counter = 0
 defect_counter = 0
 overall_defect_percentage = 0.0
 
 @app.post("/predict")
-async def predict(
-    file: UploadFile = File(...)
-):
+async def predict(file: UploadFile = File(...)):
     global prediction_counter, defect_counter, overall_defect_percentage
-    
+
     image = read_file_as_image(await file.read())
     img_batch = np.expand_dims(image, 0)
-    
+
     predictions = MODEL.predict(img_batch)
     predicted_class = CLASS_NAMES[np.argmax(predictions[0])]
-    
+
     prediction_counter += 1
-    
+
     if predicted_class in ["defect3", "open-defect", "wavy-seam-defect"]:
         defect_counter += 1
-    
+
     confidence = np.max(predictions[0])
     response = {
         'class': predicted_class,
         'confidence': float(confidence)
     }
-    
+
     if prediction_counter % 5 == 0:
         overall_defect_percentage = (defect_counter / prediction_counter) * 100.0
-    
+
     if prediction_counter == 5:
         prediction_counter = 0
         defect_counter = 0
-    
+
     response['overall_defect_percentage'] = overall_defect_percentage
-    
+
     return response
-    
+
+
+MODEL2 = tf.keras.models.load_model('./model/garmentplots.h5')
+CLASS_NAMES2 = ["CoP+IoP+Washer+Bolt", "CoP+IoP+Washer+Bolt+No Bolt", "CoP+Washers+Bolt+No Bolt", "CoP+Washers+No Washer",  "Correct Orientation+Washers", "Correct Orientation+Washers+Bolts", "Correct Orientation of Pegs", "Incorrect Orientation of Pegs", "Incorrect Orientation+Washers", "Incorrect Orientation+Washers+Bolts", "IoP+CoP pegs", "IoP+CoP+Washer+No Washer", "IoP+CoP+Washers", "IoP+Washers+Bolt+No Bolt", "No Pegs"]
+
+@app.post("/predict2")
+async def predict2(file: UploadFile = File(...)):
+    global prediction_counter, defect_counter, overall_defect_percentage
+
+    image = read_file_as_image(await file.read())
+    img_batch = np.expand_dims(image, 0)
+
+    predictions = MODEL2.predict(img_batch)
+    predicted_class = CLASS_NAMES2[np.argmax(predictions[0])]
+
+    prediction_counter += 1
+
+    if predicted_class in ["CoP+IoP+Washer+Bolt", "CoP+IoP+Washer+Bolt+No Bolt", "CoP+Washers+Bolt+No Bolt", "CoP+Washers+No Washer",  "Correct Orientation+Washers", "Correct Orientation+Washers+Bolts", "Correct Orientation of Pegs", "Incorrect Orientation of Pegs", "Incorrect Orientation+Washers", "Incorrect Orientation+Washers+Bolts", "IoP+CoP pegs", "IoP+CoP+Washer+No Washer", "IoP+CoP+Washers", "IoP+Washers+Bolt+No Bolt"]:
+        defect_counter += 1
+
+    confidence = np.max(predictions[0])
+    response = {
+        'class': predicted_class,
+        'confidence': float(confidence)
+    }
+
+    if prediction_counter % 5 == 0:
+        overall_defect_percentage = (defect_counter / prediction_counter) * 100.0
+
+    if prediction_counter == 5:
+        prediction_counter = 0
+        defect_counter = 0
+
+    response['overall_defect_percentage'] = overall_defect_percentage
+
+    return response

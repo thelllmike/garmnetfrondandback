@@ -60,7 +60,7 @@ const handleSubmit = (event) => {
           onChange={handleChange}
         />
         <br />
-        <input
+        {/* <input
           type="text"
           className="rate"
           placeholder="Rate"
@@ -78,8 +78,8 @@ const handleSubmit = (event) => {
           value={0}
           name="rate"
           onChange={handleChange}
-        />
-        <br />
+        /> */}
+     
         <br />
         <div className="button">
           <button type="submit">Sign Up</button>

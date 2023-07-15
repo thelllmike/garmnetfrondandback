@@ -54,8 +54,25 @@ def addNotes(data: dict = Body(...)):
 #     notes = db.sql('SELECT * FROM notesapp.notes')
 #     return notes
 
+# @app.put("/notes/{id}")
+# def updateNote(id: str, data: dict = Body(...)):
+#     note = {
+#         "id": id,
+#         "candidate": data.get('candidate'),
+#         "name": data.get('name'),
+#         "age": data.get('age'),
+#         "joinDate": data.get('joinDate'),
+#         "rate": data.get('rate'),
+#         "dRate": data.get('dRate')
+#     }
+#     db.update('notesapp', 'notes', [note])
+#     notes = db.sql('SELECT * FROM notesapp.notes')
+#     return notes
 @app.put("/notes/{id}")
 def updateNote(id: str, data: dict = Body(...)):
+    global overall_defect_percentage
+    overall_defect_percentage = 0.0  # Reset the overall_defect_percentage value to zero
+
     note = {
         "id": id,
         "candidate": data.get('candidate'),
@@ -68,6 +85,7 @@ def updateNote(id: str, data: dict = Body(...)):
     db.update('notesapp', 'notes', [note])
     notes = db.sql('SELECT * FROM notesapp.notes')
     return notes
+
 
 
 

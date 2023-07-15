@@ -5,7 +5,7 @@ import "../../Styles/Navbar.css";
 import axios from "axios";
 import { Link, useParams, useNavigate } from "react-router-dom";
 
-function TraineeReport() {
+function DeluxReport() {
   const navigate = useNavigate();
   const [posts, setPosts] = useState([]);
 
@@ -37,7 +37,7 @@ function TraineeReport() {
           <li>About</li>
         </ul>
       </header>
-      <h2>Defect Report</h2>
+      <h2>Dexterity Report</h2>
       <Link
   className="btn btn-outline-primary mx-2"
   to={`/register`}
@@ -65,10 +65,10 @@ function TraineeReport() {
               <td>{post.name}</td>
               <td>{post.age}</td>
               <td>{post.joinDate}</td>
-              <td>{post.rate}</td>
+              <td>{post.dRate}</td>
               <td>
                 <button onClick={() => deletePost(post.id)}>Delete</button>
-                <Link className="btn btn-outline-primary mx-2" to={`/imageupload/${post.id}`}>
+                <Link className="btn btn-outline-primary mx-2" to={`/ImageUploaddefect/${post.id}`}>
                   Defect
                 </Link>
               </td>
@@ -80,4 +80,4 @@ function TraineeReport() {
   );
 }
 
-export default TraineeReport;
+export default DeluxReport;

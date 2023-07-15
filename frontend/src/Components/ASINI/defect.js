@@ -17,6 +17,8 @@ import Clear from '@material-ui/icons/Clear';
 import "../../Styles/Register.css"
 import logo from "../../images/logo.png";
 import "../../Styles/Navbar.css";
+import { Link, useNavigate, useParams } from "react-router-dom";
+
 
 
 const ColorButton = withStyles((theme) => ({
@@ -164,18 +166,19 @@ export const ImageUploaddefect = () => {
   const [image, setImage] = useState(false);
   const [isLoading, setIsloading] = useState(false);
   let confidence = 0;
-
+  let navigate = useNavigate();
   const sendFile = async () => {
     if (image) {
       let formData = new FormData();
       formData.append("file", selectedFile);
       let res = await axios({
         method: "post",
-        url: process.env.REACT_APP_API_URL,
+        url: process.env.REACT_APP_API_URL2,
         data: formData,
       });
       if (res.status === 200) {
         setData(res.data);
+        setPost({ ...post, dRate: res.data.overall_defect_percentage });
       }
       setIsloading(false);
     }
@@ -216,6 +219,56 @@ export const ImageUploaddefect = () => {
     setData(undefined);
     setImage(true);
   };
+
+  //update rates
+  const { id } = useParams();
+  const [post, setPost] = useState({
+    candidate: "",
+    name: "",
+    age: "",
+    joinDate: "",
+    rate: "",
+    dRate: ""
+  });
+
+  useEffect(() => {
+    loadPost();
+  }, []);
+
+
+  const { candidate, name, age,joinDate,rate } = post;
+
+
+  // const onInputChange = (e) => {
+  //   setPost({ ...post, [e.target.name]: e.target.value });
+  // };
+
+  // const onSubmit = async (e) => {
+  //   e.preventDefault();
+  //   await axios.put(`http://127.0.0.1:8000/notes/${id}`, post);
+  // navigate("/traineereport");
+  // };
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.put(`http://127.0.0.1:8000/notes/${id}`, {
+        ...post,
+        // rate: data.overall_defect_percentage
+        // alert("Employee Successfully Updated...."+rate);
+      });
+      navigate("/deluxReport");
+      alert ("Employee Successfully Updated...."+post.rate);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  
+
+  const loadPost = async () => {
+    const result = await axios.get(`http://127.0.0.1:8000/notes/${id}`);
+    setPost(result.data);
+  };
+
 
   if (data) {
     confidence = (parseFloat(data.confidence) * 100).toFixed(2);
@@ -291,6 +344,9 @@ export const ImageUploaddefect = () => {
             <Grid item className={classes.buttonGrid}>
               <ColorButton variant="contained" className={classes.clearButton} color="primary" component="span" size="large" onClick={clearData} startIcon={<Clear fontSize="large" />}>
                 Clear
+              </ColorButton>
+              <ColorButton variant="contained" className={classes.clearButton} color="primary" component="span" size="large" onClick={onSubmit} startIcon={<Clear fontSize="large" />}>
+                save
               </ColorButton>
             </Grid>
           )}

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import logo from "../../images/logo.png";
 import detail1 from "../../images/detail1.png";
+import {Link} from 'react-router-dom'
 
 import "../../Styles/HomePage.css";
 import "../../Styles/Navbar.css";
@@ -34,27 +35,36 @@ export default class HomePage extends Component {
 				</div>
 
 				<div className='details'>
+				<div className='card'>
+				<div className='image'>
+					<a href="/traineereport">
+					<img src={detail1} alt='Hand Movements' />
+					</a>
+				</div>
+				<h2> Hand Movements</h2>
+				</div>
+
 					<div className='card'>
 						<div className='image'>
-							<img src={detail1} alt='' />
-						</div>
-						<h2>Hand Movements</h2>
-					</div>
-					<div className='card'>
-						<div className='image'>
-							<img src={detail1} alt='' />
+						<a href="/traineereport">
+					<img src={detail1} alt='Hand Movements' />
+					</a>
 						</div>
 						<h2>Detect Defects</h2>
 					</div>
 					<div className='card'>
 						<div className='image'>
-							<img src={detail1} alt='' />
+						<a href="/traineereport">
+					<img src={detail1} alt='Hand Movements' />
+					</a>
 						</div>
 						<h2>Detect Posture</h2>
 					</div>
 					<div className='card'>
 						<div className='image'>
-							<img src={detail1} alt='' />
+						<a href="/deluxReport">
+					<img src={detail1} alt='Hand Movements' />
+					</a>
 						</div>
 						<h2>Dexterity Test</h2>
 					</div>

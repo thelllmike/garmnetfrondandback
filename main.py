@@ -40,7 +40,8 @@ def addNotes(data: dict = Body(...)):
         "name": data.get('name'),
         "age": data.get('age'),
         "joinDate": data.get('joinDate'),
-        "rate": data.get('rate')
+        "rate": data.get('rate'),
+        "dRate": data.get('dRate')
     }
     db.insert('notesapp', 'notes', [note])
     notes = db.sql('SELECT * FROM notesapp.notes')
@@ -61,7 +62,8 @@ def updateNote(id: str, data: dict = Body(...)):
         "name": data.get('name'),
         "age": data.get('age'),
         "joinDate": data.get('joinDate'),
-        "rate": data.get('rate')
+        "rate": data.get('rate'),
+        "dRate": data.get('dRate')
     }
     db.update('notesapp', 'notes', [note])
     notes = db.sql('SELECT * FROM notesapp.notes')

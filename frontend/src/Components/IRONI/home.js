@@ -173,7 +173,7 @@ export const ImageUpload = () => {
       formData.append("file", selectedFile);
       let res = await axios({
         method: "post",
-        url: process.env.REACT_APP_API_URL2,
+        url: process.env.REACT_APP_API_URL,
         data: formData,
       });
       if (res.status === 200) {

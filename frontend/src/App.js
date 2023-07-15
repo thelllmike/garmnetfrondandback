@@ -13,6 +13,7 @@ import Register from "./Components/ASINI/Register";
 import { ImageUpload } from "./Components/IRONI/home";
 import { ImageUploaddefect } from "./Components/ASINI/defect";
 import TraineeReport from "./Components/IRONI/TraineeReport";
+import DeluxReport from "./Components/ASINI/deluxReport";
 import HomePage from "./Components/ASINI/HomePage";
 
 class App extends Component {
@@ -30,9 +31,10 @@ class App extends Component {
 						<Route path='/signin' element={<SignIn />} />
 						<Route path='/register' element={<Register />} />
 						<Route path='/imageupload/:id' element={<ImageUpload />} />
-						<Route path='/ImageUploaddefect' element={<ImageUploaddefect />} />
+						<Route path='/ImageUploaddefect/:id' element={<ImageUploaddefect />} />
 							<Route path='/traineereport' element={<TraineeReport />} />
-						<Route path='/homepage' element={<HomePage />} />
+							<Route path='/deluxReport' element={<DeluxReport />} />
+						<Route exact path='/' element={<HomePage />} />
 					</Routes>
 				</Router>
 			</div>

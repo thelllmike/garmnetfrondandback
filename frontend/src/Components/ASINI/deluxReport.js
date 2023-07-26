@@ -3,6 +3,8 @@ import "../../Styles/TraineeReport.css";
 import logo from "../../images/logo.png";
 import "../../Styles/Navbar.css";
 import axios from "axios";
+import jsPDF from "jspdf";
+import "jspdf-autotable"; // Import jspdf-autotable along with jsPDF
 import { Link, useParams, useNavigate } from "react-router-dom";
 
 function DeluxReport() {
@@ -22,7 +24,40 @@ function DeluxReport() {
   const deletePost = async (id) => {
     await axios.delete(`http://127.0.0.1:8000/notes/${id}`);
     loadPosts();
-	alert("Employee Successfully Deleted....")
+    alert("Employee Successfully Deleted....");
+  };
+
+  // Corrected function declaration without "export"
+  const exportPDF = () => {
+    const unit = "pt";
+    const size = "A4"; // Use A1, A2, A3 or A4
+    const orientation = "portrait"; // portrait or landscape
+
+    const marginLeft = 40;
+    const doc = new jsPDF(orientation, unit, size);
+
+    doc.setFontSize(15);
+
+    const title = " All Employees Report";
+    const headers = [["candidate", "name", "age", "joinDate", "dRate"]];
+
+    const data = posts.map((elt) => [
+      elt.candidate,
+      elt.name,
+      elt.age,
+      elt.joinDate,
+      elt.dRate,
+    ]);
+
+    let content = {
+      startY: 50,
+      head: headers,
+      body: data,
+    };
+
+    doc.text(title, marginLeft, 40);
+    doc.autoTable(content);
+    doc.save("report.pdf");
   };
 
   return (
@@ -39,13 +74,12 @@ function DeluxReport() {
       </header>
       <h2>Dexterity Report</h2>
       <Link
-  className="btn btn-outline-primary mx-2"
-  to={`/register`}
-  style={{ position: 'absolute', top: 200, right: 30 }} // Add inline styles for positioning
->
-  Employee Register
-</Link>
-
+        className="btn btn-outline-primary mx-2"
+        to={`/register`}
+        style={{ position: "absolute", top: 200, right: 30 }}
+      >
+        Employee Register
+      </Link>
 
       <table className="table table-striped" style={{ marginTop: 20 }}>
         <thead>
@@ -68,14 +102,32 @@ function DeluxReport() {
               <td>{post.dRate}</td>
               <td>
                 <button onClick={() => deletePost(post.id)}>Delete</button>
-                <Link className="btn btn-outline-primary mx-2" to={`/ImageUploaddefect/${post.id}`}>
+                <Link
+                  className="btn btn-outline-primary mx-2"
+                  to={`/ImageUploaddefect/${post.id}`}
+                >
                   Defect
                 </Link>
               </td>
             </tr>
           ))}
         </tbody>
+        
       </table>
+      <center>
+          <button
+            onClick={() => exportPDF()}
+            style={{
+              background: "blue",
+              padding: 10,
+              color: "white",
+              border: "none",
+              borderRadius: 20,
+            }}
+          >
+            - Export All -
+          </button>
+        </center>
     </div>
   );
 }

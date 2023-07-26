@@ -1,5 +1,6 @@
-from fastapi import FastAPI, Body, File, UploadFile, HTTPException
+from fastapi import FastAPI, Body, File, UploadFile, HTTPException,Query
 from fastapi.middleware.cors import CORSMiddleware
+from typing import List
 from database import db
 import numpy as np
 from io import BytesIO
@@ -86,8 +87,32 @@ def updateNote(id: str, data: dict = Body(...)):
     notes = db.sql('SELECT * FROM notesapp.notes')
     return notes
 
+#search
+@app.get("/search", response_model=List[dict])
+def search_notes(
+    candidate: str = Query(None),
+    name: str = Query(None),
+    age: int = Query(None),
+    joinDate: str = Query(None),
+    rate: float = Query(None),
+    dRate: float = Query(None)
+):
+    notes = db.sql('SELECT * FROM notesapp.notes')  # Fetch all notes from the database
+    results = []
 
+    for note in notes:
+        # Check if the note matches the search criteria
+        if (
+            (candidate is None or note["candidate"] == candidate) and
+            (name is None or note["name"] == name) and
+            (age is None or note["age"] == age) and
+            (joinDate is None or note["joinDate"] == joinDate) and
+            (rate is None or note["rate"] == rate) and
+            (dRate is None or note["dRate"] == dRate)
+        ):
+            results.append(note)
 
+    return results
 
 
 @app.delete("/notes/{id}")

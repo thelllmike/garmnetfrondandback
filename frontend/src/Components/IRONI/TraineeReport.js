@@ -3,6 +3,8 @@ import "../../Styles/TraineeReport.css";
 import logo from "../../images/logo.png";
 import "../../Styles/Navbar.css";
 import axios from "axios";
+import jsPDF from "jspdf";
+import "jspdf-autotable"; 
 import { Link, useParams, useNavigate } from "react-router-dom";
 
 function TraineeReport() {
@@ -24,6 +26,39 @@ function TraineeReport() {
     loadPosts();
 	alert("Employee Successfully Deleted....")
   };
+
+  const exportPDF = () => {
+    const unit = "pt";
+    const size = "A4"; // Use A1, A2, A3 or A4
+    const orientation = "portrait"; // portrait or landscape
+
+    const marginLeft = 40;
+    const doc = new jsPDF(orientation, unit, size);
+
+    doc.setFontSize(15);
+
+    const title = " All Employees Report";
+    const headers = [["candidate", "name", "age", "joinDate", "rate"]];
+
+    const data = posts.map((elt) => [
+      elt.candidate,
+      elt.name,
+      elt.age,
+      elt.joinDate,
+      elt.rate,
+    ]);
+
+    let content = {
+      startY: 50,
+      head: headers,
+      body: data,
+    };
+
+    doc.text(title, marginLeft, 40);
+    doc.autoTable(content);
+    doc.save("report.pdf");
+  };
+
 
   return (
     <div className="traineeReport">
@@ -76,6 +111,20 @@ function TraineeReport() {
           ))}
         </tbody>
       </table>
+      <center>
+          <button
+            onClick={() => exportPDF()}
+            style={{
+              background: "blue",
+              padding: 10,
+              color: "white",
+              border: "none",
+              borderRadius: 20,
+            }}
+          >
+            - Export All -
+          </button>
+        </center>
     </div>
   );
 }

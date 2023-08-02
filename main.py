@@ -175,8 +175,8 @@ async def predict(file: UploadFile = File(...)):
     return response
 
 
-MODEL2 = tf.keras.models.load_model('./model/garmentplots.h5')
-CLASS_NAMES2 = ["CoP+IoP+Washer+Bolt", "CoP+IoP+Washer+Bolt+No Bolt", "CoP+Washers+Bolt+No Bolt", "CoP+Washers+No Washer",  "Correct Orientation+Washers", "Correct Orientation+Washers+Bolts", "Correct Orientation of Pegs", "Incorrect Orientation of Pegs", "Incorrect Orientation+Washers", "Incorrect Orientation+Washers+Bolts", "IoP+CoP pegs", "IoP+CoP+Washer+No Washer", "IoP+CoP+Washers", "IoP+Washers+Bolt+No Bolt", "No Pegs"]
+MODEL2 = tf.keras.models.load_model('./model/garmentplots4.h5')
+CLASS_NAMES2 = ["CoP+IoP+Washer+Bolt", "CoP+IoP+Washer+Bolt+No Bolt", "CoP+Washers+Bolt+No Bolt", "CoP+Washers+No Washer",  "Correct Orientation+Washers", "Correct Orientation+Washers+Bolts", "Correct Orientation of Pegs", "Incorrect Orientation of Pegs", "Incorrect Orientation+Washers", "Incorrect Orientation+Washers+Bolts", "IoP+CoP pegs", "IoP+CoP+Washer+No Washer", "IoP+CoP+Washers", "IoP+Washers+Bolt+No Bolt", "No Pegs", "IoP+Washers+No Washer", "IoP+CoP+Washer+Bolt+No Bolt"]
 
 @app.post("/predict2")
 async def predict2(file: UploadFile = File(...)):
@@ -190,7 +190,7 @@ async def predict2(file: UploadFile = File(...)):
 
     prediction_counter += 1
 
-    if predicted_class in ["CoP+IoP+Washer+Bolt", "CoP+IoP+Washer+Bolt+No Bolt", "CoP+Washers+Bolt+No Bolt", "CoP+Washers+No Washer",  "Correct Orientation+Washers", "Correct Orientation+Washers+Bolts", "Correct Orientation of Pegs", "Incorrect Orientation of Pegs", "Incorrect Orientation+Washers", "Incorrect Orientation+Washers+Bolts", "IoP+CoP pegs", "IoP+CoP+Washer+No Washer", "IoP+CoP+Washers", "IoP+Washers+Bolt+No Bolt"]:
+    if predicted_class in["CoP+IoP+Washer+Bolt", "CoP+IoP+Washer+Bolt+No Bolt", "CoP+Washers+Bolt+No Bolt", "CoP+Washers+No Washer",  "Correct Orientation+Washers", "Correct Orientation+Washers+Bolts", "Correct Orientation of Pegs", "Incorrect Orientation of Pegs", "Incorrect Orientation+Washers", "Incorrect Orientation+Washers+Bolts", "IoP+CoP pegs", "IoP+CoP+Washer+No Washer", "IoP+CoP+Washers", "IoP+Washers+Bolt+No Bolt", "IoP+Washers+No Washer", "IoP+CoP+Washer+Bolt+No Bolt"]:
         defect_counter += 1
 
     confidence = np.max(predictions[0])
